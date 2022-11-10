@@ -1,19 +1,17 @@
+import React from "react";
 import { SearchBox } from "@appbaseio/reactivesearch";
 import { Select } from "antd";
 import "antd/dist/antd.css";
-import React, { useState } from "react";
 
-const Search = () => {
-  const [value, setValue] = useState("All");
-
+const Search = ({ mlCollection, setMlCollection }) => {
   return (
     <div style={{ display: "flex", gap: 20 }}>
       <Select
         style={{ width: 220 }}
         allowClear
         size="large"
-        value={value}
-        onChange={(val) => setValue(val)}
+        value={mlCollection}
+        onChange={(val) => setMlCollection(val)}
         options={[
           {
             value: "All",

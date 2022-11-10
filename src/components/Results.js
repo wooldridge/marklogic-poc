@@ -11,7 +11,7 @@ const Results = () => {
           and: ["term", "search"],
         }}
         renderItem={(res) => {
-          console.log(res);
+          //   console.log(res);
           return <div>{res.title}</div>;
         }}
       />
