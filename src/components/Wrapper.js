@@ -58,8 +58,13 @@ const Wrapper = () => {
         transformRequest={(props) => {
           setIsLoading(true);
           const newBody = JSON.parse(props.body);
+          const query = (newBody.query || []).map((obj) => {
+            const newObj = { ...obj };
+            delete newObj.react;
+            return newObj;
+          });
           const newQuery = [
-            ...(mlMode === "search" ? newBody.query : []),
+            ...(mlMode === "search" ? query : []),
 
             { id: "search", value: inputVal, execute: true },
           ];
