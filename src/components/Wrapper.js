@@ -5,6 +5,7 @@ import CollectionDropdown from "./CollectionDropdown";
 import Facet from "./Facet";
 import Results from "./Results";
 import Search from "./Search";
+import TableLayout from "./TableLayout";
 
 const Wrapper = () => {
   const [mlMode, setMlMode] = useState("search");
@@ -107,10 +108,14 @@ const Wrapper = () => {
             </div>
           </Tabs.TabPane>
           <Tabs.TabPane tab="SPARQL" key="sparql">
-            SPARQL tab
+            <div>
+              <Search />
+              <Results />
+            </div>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Optic" key="optic">
-            Optic tab
+            <Search />
+            <TableLayout />
           </Tabs.TabPane>
         </Tabs>
       </div>

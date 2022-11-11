@@ -39,7 +39,7 @@ const TableLayout = () => {
   return (
     <div>
       <ReactiveList
-        dataField="Member.Race"
+        dataField={["description", "label"]}
         componentId="result"
         react={{
           and: ["term", "search"],

@@ -5,13 +5,13 @@ const Results = () => {
   return (
     <div>
       <ReactiveList
-        dataField="Member.Race"
+        dataField={["description", "label"]}
         componentId="result"
         react={{
           and: ["term", "search"],
         }}
         renderItem={(res) => {
-          //   console.log(res);
+          console.log(res);
           return <div>{res.title}</div>;
         }}
       />
