@@ -3,8 +3,8 @@ import { SearchBox } from "@appbaseio/reactivesearch";
 import { Button, Input, Select } from "antd";
 import "antd/dist/antd.css";
 
-const Search = ({ setInputVal }) => {
-  const [val, setVal] = useState("");
+const Search = ({ inputVal, setInputVal }) => {
+  const [val, setVal] = useState(inputVal);
 
   return (
     <div style={{ display: "flex", width: "80%", gap: 20 }}>

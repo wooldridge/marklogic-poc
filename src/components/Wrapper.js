@@ -25,6 +25,7 @@ const Wrapper = () => {
   }, []);
 
   const handleTabChange = (key) => {
+    setInputVal("");
     setMlMode(key);
   };
 
@@ -58,9 +59,8 @@ const Wrapper = () => {
           setIsLoading(true);
           const newBody = JSON.parse(props.body);
           const newQuery = [
-            ...newBody.query.filter(
-              (i) => i.id === "term" && i.type === "term"
-            ),
+            ...(mlMode === "search" ? newBody.query : []),
+
             { id: "search", value: inputVal, execute: true },
           ];
           newBody.query = newQuery;
@@ -128,7 +128,6 @@ const Wrapper = () => {
                   <div style={{ width: "18%", minWidth: 220 }}>
                     <Facet />
                   </div>
-                  <SelectedFilters />
                   <SearchResults
                     searchHits={searchHits}
                     isLoading={isLoading}
@@ -146,8 +145,13 @@ const Wrapper = () => {
               </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Optic" key="optic">
-              <Search inputVal={inputVal} setInputVal={setInputVal} />
-              <TableLayout searchHits={searchHits} isLoading={isLoading} />
+              <div style={{ padding: 20 }}>
+                <div style={{ marginBottom: 30 }}>
+                  <Search inputVal={inputVal} setInputVal={setInputVal} />
+                </div>
+
+                <TableLayout searchHits={searchHits} isLoading={isLoading} />
+              </div>
             </Tabs.TabPane>
           </Tabs>
         </div>
