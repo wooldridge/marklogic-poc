@@ -1,6 +1,7 @@
 import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 import { Tabs } from "antd";
 import React, { useEffect, useState } from "react";
+import CollectionDropdown from "./CollectionDropdown";
 import Facet from "./Facet";
 import Results from "./Results";
 import Search from "./Search";
@@ -88,10 +89,14 @@ const Wrapper = () => {
         >
           <Tabs.TabPane tab="/vi1/Search" key="search">
             <div style={{ padding: 20 }}>
-              <Search
-                mlCollection={mlCollection}
-                setMlCollection={handleMlCollection}
-              />
+              <div style={{ display: "flex", gap: 20 }}>
+                <CollectionDropdown
+                  mlCollection={mlCollection}
+                  setMlCollection={handleMlCollection}
+                />
+                <Search />
+              </div>
+
               <div style={{ display: "flex", gap: 20 }}>
                 <div style={{ width: 220 }}>
                   <Facet />
