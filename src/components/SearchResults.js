@@ -1,8 +1,7 @@
-import { ReactiveList } from "@appbaseio/reactivesearch";
 import { List } from "antd";
 import React from "react";
 
-const Results = ({ searchHits, isLoading }) => {
+const SearchResults = ({ searchHits, isLoading }) => {
   console.log(searchHits);
   return (
     <div style={{ width: "80%" }}>
@@ -37,4 +36,4 @@ const Results = ({ searchHits, isLoading }) => {
   );
 };
 
-export default Results;
+export default SearchResults;

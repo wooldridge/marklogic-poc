@@ -8,9 +8,10 @@ import get from "lodash.get";
 import React, { useEffect, useState } from "react";
 import CollectionDropdown from "./CollectionDropdown";
 import Facet from "./Facet";
-import Results from "./Results";
+import SearchResults from "./SearchResults";
 import Search from "./Search";
 import TableLayout from "./TableLayout";
+import SparqlResults from "./SparqlResults";
 
 const Wrapper = () => {
   const [mlMode, setMlMode] = useState("search");
@@ -57,13 +58,9 @@ const Wrapper = () => {
           setIsLoading(true);
           const newBody = JSON.parse(props.body);
           const newQuery = [
-            // ...newBody.query,
-            {
-              id: "term",
-              type: "term",
-              execute: true,
-              dataField: "Member.Race",
-            },
+            ...newBody.query.filter(
+              (i) => i.id === "term" && i.type === "term"
+            ),
             { id: "search", value: inputVal, execute: true },
           ];
           newBody.query = newQuery;
@@ -81,12 +78,16 @@ const Wrapper = () => {
           if (componentId === "search") {
             const hits = elasticsearchResponse?.hits?.hits || [];
             const newHits = hits.map((hit) => {
-              const content = get(hit, "_source.extracted.content", [{}]);
-              const contentObj = content[0];
-              if (contentObj && Object.values(contentObj).length) {
-                return Object.values(contentObj)[0];
+              if (mlMode === "search") {
+                const content = get(hit, "_source.extracted.content", [{}]);
+                const contentObj = content[0];
+                if (contentObj && Object.values(contentObj).length) {
+                  return Object.values(contentObj)[0];
+                }
+                return {};
               }
-              return {};
+              const content = get(hit, "_source", {});
+              return content;
             });
             setSearchHits(newHits);
           }
@@ -128,7 +129,10 @@ const Wrapper = () => {
                     <Facet />
                   </div>
                   <SelectedFilters />
-                  <Results searchHits={searchHits} isLoading={isLoading} />
+                  <SearchResults
+                    searchHits={searchHits}
+                    isLoading={isLoading}
+                  />
                 </div>
               </div>
             </Tabs.TabPane>
@@ -138,12 +142,12 @@ const Wrapper = () => {
                   <Search inputVal={inputVal} setInputVal={setInputVal} />
                 </div>
 
-                <Results searchHits={searchHits} isLoading={isLoading} />
+                <SparqlResults searchHits={searchHits} isLoading={isLoading} />
               </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Optic" key="optic">
               <Search inputVal={inputVal} setInputVal={setInputVal} />
-              <TableLayout searchHits={searchHits} />
+              <TableLayout searchHits={searchHits} isLoading={isLoading} />
             </Tabs.TabPane>
           </Tabs>
         </div>

@@ -2,7 +2,7 @@ import { ReactiveList } from "@appbaseio/reactivesearch";
 import { Table } from "antd";
 import React from "react";
 
-const TableLayout = () => {
+const TableLayout = ({ searchHits, isLoading }) => {
   const columns = [
     {
       title: "Member",
@@ -38,26 +38,7 @@ const TableLayout = () => {
 
   return (
     <div>
-      <ReactiveList
-        // dataField={["description", "label"]}
-        componentId="result"
-        react={{
-          and: ["term", "search"],
-        }}
-        render={({ loading, error, data }) => {
-          if (loading) {
-            return <div>Fetching Results.</div>;
-          }
-          if (error) {
-            return (
-              <div>
-                Something went wrong! Error details {JSON.stringify(error)}
-              </div>
-            );
-          }
-          return <Table columns={columns} dataSource={data} />;
-        }}
-      />
+      <Table columns={columns} dataSource={searchHits} />
     </div>
   );
 };
