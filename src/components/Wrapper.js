@@ -1,5 +1,10 @@
-import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
+import {
+  ReactiveBase,
+  ReactiveComponent,
+  SelectedFilters,
+} from "@appbaseio/reactivesearch";
 import { Tabs } from "antd";
+import get from "lodash.get";
 import React, { useEffect, useState } from "react";
 import CollectionDropdown from "./CollectionDropdown";
 import Facet from "./Facet";
@@ -11,6 +16,8 @@ const Wrapper = () => {
   const [mlMode, setMlMode] = useState("search");
   const [mlCollection, setMlCollection] = useState("Member");
   const [inputVal, setInputVal] = useState("");
+  const [searchHits, setSearchHits] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     handleTabChange(mlMode);
@@ -40,34 +47,26 @@ const Wrapper = () => {
   };
 
   return (
-    <div key={`${mlMode}-${mlCollection}`}>
+    <div key={`${mlMode}-${mlCollection}-${inputVal}`}>
       <ReactiveBase
         app="_marklogic"
         url="https://sls-marklogic-mhtrceb-arc.searchbase.io"
         credentials="2vhVRi0Oxf:ADyzknt5fY5FLmWcVK"
         enableAppbase
         transformRequest={(props) => {
-          const newBody = JSON.parse(
-            // eslint-disable-next-line
-            props.body
-          );
-          const newQuery = newBody.query.map((ele) => {
-            if (ele.id === "search" && ele.type === "search") {
-              // const newEle = {};
-              // newEle.id = ele.id;
-              // newEle.value = ele.value || "";
-              // if (ele.dataField) newEle.dataField = ele.dataField;
-
-              const newEle = { ...ele };
-              // type sugegstion is not supported
-              newEle.type = "search";
-              // delete newEle.type;
-              return newEle;
-            }
-            return ele;
-          });
+          setIsLoading(true);
+          const newBody = JSON.parse(props.body);
+          const newQuery = [
+            // ...newBody.query,
+            {
+              id: "term",
+              type: "term",
+              execute: true,
+              dataField: "Member.Race",
+            },
+            { id: "search", value: inputVal, execute: true },
+          ];
           newBody.query = newQuery;
-          // eslint-disable-next-line
           props.body = JSON.stringify(newBody);
           if (mlMode === "search") props.url = getURL();
           else {
@@ -78,6 +77,22 @@ const Wrapper = () => {
 
           return props;
         }}
+        transformResponse={async (elasticsearchResponse, componentId) => {
+          if (componentId === "search") {
+            const hits = elasticsearchResponse?.hits?.hits || [];
+            const newHits = hits.map((hit) => {
+              const content = get(hit, "_source.extracted.content", [{}]);
+              const contentObj = content[0];
+              if (contentObj && Object.values(contentObj).length) {
+                return Object.values(contentObj)[0];
+              }
+              return {};
+            });
+            setSearchHits(newHits);
+          }
+          setIsLoading(false);
+          return elasticsearchResponse;
+        }}
       >
         <div
           style={{
@@ -87,6 +102,12 @@ const Wrapper = () => {
             gap: 20,
           }}
         >
+          <ReactiveComponent
+            componentId="search"
+            defaultQuery={() => ({
+              aggs: {},
+            })}
+          />
           <Tabs
             defaultActiveKey="search"
             activeKey={mlMode}
@@ -107,19 +128,22 @@ const Wrapper = () => {
                     <Facet />
                   </div>
                   <SelectedFilters />
-                  <Results />
+                  <Results searchHits={searchHits} isLoading={isLoading} />
                 </div>
               </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="SPARQL" key="sparql">
-              <div>
-                <Search inputVal={inputVal} setInputVal={setInputVal} />
-                <Results />
+              <div style={{ padding: 20 }}>
+                <div style={{ marginBottom: 30 }}>
+                  <Search inputVal={inputVal} setInputVal={setInputVal} />
+                </div>
+
+                <Results searchHits={searchHits} isLoading={isLoading} />
               </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Optic" key="optic">
               <Search inputVal={inputVal} setInputVal={setInputVal} />
-              <TableLayout />
+              <TableLayout searchHits={searchHits} />
             </Tabs.TabPane>
           </Tabs>
         </div>
