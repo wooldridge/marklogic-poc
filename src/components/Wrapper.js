@@ -56,7 +56,9 @@ const Wrapper = () => {
           const newQuery = newBody.query.map((ele) => {
             if (ele.id === "search" && ele.type === "suggestion") {
               const newEle = { ...ele };
-              delete newEle.type;
+              // type sugegstion is not supported
+              newEle.type = "search";
+              // delete newEle.type;
               return newEle;
             }
             return ele;
