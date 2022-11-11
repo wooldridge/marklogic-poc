@@ -60,7 +60,6 @@ const Wrapper = () => {
           const newBody = JSON.parse(props.body);
           const newQuery = [
             ...(mlMode === "search" ? newBody.query : []),
-
             { id: "search", value: inputVal, execute: true },
           ];
           newBody.query = newQuery;

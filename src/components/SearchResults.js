@@ -22,8 +22,8 @@ const SearchResults = ({ searchHits, isLoading }) => {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  {(res.origAddress1 || res.Addressline1) && (
-                    <div>Address: {res.origAddress1 || res.Addressline1}</div>
+                  {(res.FullAddress || res.Addressline1) && (
+                    <div>Address: {res.FullAddress || res.Addressline1}</div>
                   )}
                   {res.Gender && <div>Gender: {res.Gender}</div>}
                 </div>
