@@ -9,7 +9,7 @@ import TableLayout from "./TableLayout";
 
 const Wrapper = () => {
   const [mlMode, setMlMode] = useState("search");
-  const [mlCollection, setMlCollection] = useState("All");
+  const [mlCollection, setMlCollection] = useState("Member");
   const [inputVal, setInputVal] = useState("");
 
   useEffect(() => {
@@ -29,13 +29,10 @@ const Wrapper = () => {
       "https://sls-marklogic-mhtrceb-arc.searchbase.io/_marklogic/_reactivesearch";
     let query = "";
     if (mlCollection && mlMode) {
-      if (mlCollection !== "All")
-        query += `ml__collection=${mlCollection}&ml__mode=${mlMode}`;
-      else query += `ml__mode=${mlMode}`;
+      query += `ml__collection=${mlCollection}&ml__mode=${mlMode}`;
     } else if (mlMode || mlCollection) {
       if (mlMode) query += `ml__mode=${mlMode}`;
-      if (mlCollection && mlCollection !== "All")
-        query += `ml__collection=${mlCollection}`;
+      if (mlCollection) query += `ml__collection=${mlCollection}`;
     }
     if (query) return `${str}?${query}`;
 

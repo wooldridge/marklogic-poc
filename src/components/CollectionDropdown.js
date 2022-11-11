@@ -11,10 +11,6 @@ const CollectionDropdown = ({ mlCollection, setMlCollection }) => {
       onChange={(val) => setMlCollection(val)}
       options={[
         {
-          value: "All",
-          label: "All",
-        },
-        {
           value: "Member",
           label: "Member",
         },
