@@ -54,7 +54,12 @@ const Wrapper = () => {
             props.body
           );
           const newQuery = newBody.query.map((ele) => {
-            if (ele.id === "search" && ele.type === "suggestion") {
+            if (ele.id === "search" && ele.type === "search") {
+              // const newEle = {};
+              // newEle.id = ele.id;
+              // newEle.value = ele.value || "";
+              // if (ele.dataField) newEle.dataField = ele.dataField;
+
               const newEle = { ...ele };
               // type sugegstion is not supported
               newEle.type = "search";
