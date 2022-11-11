@@ -10,6 +10,7 @@ import TableLayout from "./TableLayout";
 const Wrapper = () => {
   const [mlMode, setMlMode] = useState("search");
   const [mlCollection, setMlCollection] = useState("All");
+  const [inputVal, setInputVal] = useState("");
 
   useEffect(() => {
     handleTabChange(mlMode);
@@ -96,16 +97,16 @@ const Wrapper = () => {
           >
             <Tabs.TabPane tab="/vi1/Search" key="search">
               <div style={{ padding: 20 }}>
-                <div style={{ display: "flex", gap: 20 }}>
+                <div style={{ display: "flex", gap: 20, marginBottom: 30 }}>
                   <CollectionDropdown
                     mlCollection={mlCollection}
                     setMlCollection={handleMlCollection}
                   />
-                  <Search />
+                  <Search inputVal={inputVal} setInputVal={setInputVal} />
                 </div>
 
                 <div style={{ display: "flex", gap: 20 }}>
-                  <div style={{ width: 220 }}>
+                  <div style={{ width: "18%", minWidth: 220 }}>
                     <Facet />
                   </div>
                   <SelectedFilters />
@@ -115,12 +116,12 @@ const Wrapper = () => {
             </Tabs.TabPane>
             <Tabs.TabPane tab="SPARQL" key="sparql">
               <div>
-                <Search />
+                <Search inputVal={inputVal} setInputVal={setInputVal} />
                 <Results />
               </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Optic" key="optic">
-              <Search />
+              <Search inputVal={inputVal} setInputVal={setInputVal} />
               <TableLayout />
             </Tabs.TabPane>
           </Tabs>

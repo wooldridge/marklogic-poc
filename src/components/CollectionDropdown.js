@@ -4,7 +4,7 @@ import React from "react";
 const CollectionDropdown = ({ mlCollection, setMlCollection }) => {
   return (
     <Select
-      style={{ width: 220 }}
+      style={{ width: "18%", minWidth: 220 }}
       allowClear
       size="large"
       value={mlCollection}
