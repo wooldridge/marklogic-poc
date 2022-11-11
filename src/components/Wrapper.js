@@ -9,117 +9,117 @@ import TableLayout from "./TableLayout";
 
 const Wrapper = () => {
   const [mlMode, setMlMode] = useState("search");
-  const [queryParams, setQueryParams] = useState("");
   const [mlCollection, setMlCollection] = useState("All");
-  const [url, setUrl] = useState(
-    "https://sls-marklogic-mhtrceb-arc.searchbase.io"
-  );
 
   useEffect(() => {
-    setUrl(getURL());
-  }, [queryParams]);
+    handleTabChange(mlMode);
+  }, []);
 
   const handleTabChange = (key) => {
     setMlMode(key);
-    let newStr = "";
-    if (queryParams) {
-      newStr = `${queryParams}&ml__mode=${key}`;
-    } else {
-      newStr = `ml__mode=${key}`;
-    }
-    setQueryParams(newStr);
   };
 
   const handleMlCollection = (key) => {
     setMlCollection(key);
-    let newStr = "";
-    if (queryParams) {
-      newStr = `${queryParams}&ml__collection=${key}`;
-    } else {
-      newStr = `ml__collection=${key}`;
-    }
-    setQueryParams(newStr);
   };
 
   const getURL = () => {
-    let str = "https://sls-marklogic-mhtrceb-arc.searchbase.io";
-    if (queryParams) return `${str}?${queryParams}`;
+    let str =
+      "https://sls-marklogic-mhtrceb-arc.searchbase.io/_marklogic/_reactivesearch";
+    let query = "";
+    if (mlCollection && mlMode) {
+      if (mlCollection !== "All")
+        query += `ml__collection=${mlCollection}&ml__mode=${mlMode}`;
+      else query += `ml__mode=${mlMode}`;
+    } else if (mlMode || mlCollection) {
+      if (mlMode) query += `ml__mode=${mlMode}`;
+      if (mlCollection && mlCollection !== "All")
+        query += `ml__collection=${mlCollection}`;
+    }
+    if (query) return `${str}?${query}`;
 
     return str;
   };
 
-  console.log(url, queryParams);
   return (
-    <ReactiveBase
-      app="_marklogic"
-      url={url}
-      credentials="2vhVRi0Oxf:ADyzknt5fY5FLmWcVK"
-      enableAppbase
-      transformRequest={(props) => {
-        const newBody = JSON.parse(
+    <div key={`${mlMode}-${mlCollection}`}>
+      <ReactiveBase
+        app="_marklogic"
+        url="https://sls-marklogic-mhtrceb-arc.searchbase.io"
+        credentials="2vhVRi0Oxf:ADyzknt5fY5FLmWcVK"
+        enableAppbase
+        transformRequest={(props) => {
+          const newBody = JSON.parse(
+            // eslint-disable-next-line
+            props.body
+          );
+          const newQuery = newBody.query.map((ele) => {
+            if (ele.id === "search" && ele.type === "suggestion") {
+              const newEle = { ...ele };
+              delete newEle.type;
+              return newEle;
+            }
+            return ele;
+          });
+          newBody.query = newQuery;
           // eslint-disable-next-line
-          props.body
-        );
-        const newQuery = newBody.query.map((ele) => {
-          if (ele.id === "search" && ele.type === "suggestion") {
-            const newEle = { ...ele };
-            delete newEle.type;
-            return newEle;
+          props.body = JSON.stringify(newBody);
+          if (mlMode === "search") props.url = getURL();
+          else {
+            let str =
+              "https://sls-marklogic-mhtrceb-arc.searchbase.io/_marklogic/_reactivesearch";
+            props.url = `${str}?ml__mode=${mlMode}`;
           }
-          return ele;
-        });
-        newBody.query = newQuery;
-        // eslint-disable-next-line
-        props.body = JSON.stringify(newBody);
 
-        return props;
-      }}
-    >
-      <div
-        style={{
-          padding: 30,
-          display: "flex",
-          flexDirection: "column",
-          gap: 20,
+          return props;
         }}
       >
-        <Tabs
-          defaultActiveKey="search"
-          activeKey={mlMode}
-          onChange={handleTabChange}
+        <div
+          style={{
+            padding: 30,
+            display: "flex",
+            flexDirection: "column",
+            gap: 20,
+          }}
         >
-          <Tabs.TabPane tab="/vi1/Search" key="search">
-            <div style={{ padding: 20 }}>
-              <div style={{ display: "flex", gap: 20 }}>
-                <CollectionDropdown
-                  mlCollection={mlCollection}
-                  setMlCollection={handleMlCollection}
-                />
-                <Search />
-              </div>
-
-              <div style={{ display: "flex", gap: 20 }}>
-                <div style={{ width: 220 }}>
-                  <Facet />
+          <Tabs
+            defaultActiveKey="search"
+            activeKey={mlMode}
+            onChange={handleTabChange}
+          >
+            <Tabs.TabPane tab="/vi1/Search" key="search">
+              <div style={{ padding: 20 }}>
+                <div style={{ display: "flex", gap: 20 }}>
+                  <CollectionDropdown
+                    mlCollection={mlCollection}
+                    setMlCollection={handleMlCollection}
+                  />
+                  <Search />
                 </div>
-                <SelectedFilters />
+
+                <div style={{ display: "flex", gap: 20 }}>
+                  <div style={{ width: 220 }}>
+                    <Facet />
+                  </div>
+                  <SelectedFilters />
+                  <Results />
+                </div>
+              </div>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="SPARQL" key="sparql">
+              <div>
+                <Search />
                 <Results />
               </div>
-            </div>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="SPARQL" key="sparql">
-            <div>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Optic" key="optic">
               <Search />
-              <Results />
-            </div>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Optic" key="optic">
-            <Search />
-            <TableLayout />
-          </Tabs.TabPane>
-        </Tabs>
-      </div>
-    </ReactiveBase>
+              <TableLayout />
+            </Tabs.TabPane>
+          </Tabs>
+        </div>
+      </ReactiveBase>
+    </div>
   );
 };
 

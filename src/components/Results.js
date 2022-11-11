@@ -1,4 +1,5 @@
 import { ReactiveList } from "@appbaseio/reactivesearch";
+import { List } from "antd";
 import React from "react";
 
 const Results = () => {
@@ -10,9 +11,31 @@ const Results = () => {
         react={{
           and: ["term", "search"],
         }}
-        renderItem={(res) => {
-          console.log(res);
-          return <div>{res.title}</div>;
+        render={({ loading, error, data }) => {
+          if (loading) {
+            return <div>Fetching Results.</div>;
+          }
+          if (error) {
+            return (
+              <div>
+                Something went wrong! Error details {JSON.stringify(error)}
+              </div>
+            );
+          }
+          return (
+            <List
+              bordered
+              dataSource={data}
+              renderItem={(res) => (
+                <List.Item style={{ textAlign: "left" }}>
+                  <List.Item.Meta
+                    title={<b style={{ fontSize: 16 }}>{res.Disease}</b>}
+                    description={res.Description}
+                  />
+                </List.Item>
+              )}
+            ></List>
+          );
         }}
       />
     </div>
