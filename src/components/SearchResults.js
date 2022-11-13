@@ -19,14 +19,17 @@ const SearchResults = ({ searchHits, isLoading }) => {
                 </b>
               }
               description={
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  {(res.FullAddress || res.Addressline1) && (
-                    <div>Address: {res.FullAddress || res.Addressline1}</div>
-                  )}
-                  {res.Gender && <div>Gender: {res.Gender}</div>}
-                </div>
+                <>
+                  {res.Race && <div>Race: {res.Race}</div>}
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    {(res.FullAddress || res.Addressline1) && (
+                      <div>Address: {res.FullAddress || res.Addressline1}</div>
+                    )}
+                    {res.Gender && <div>Gender: {res.Gender}</div>}
+                  </div>
+                </>
               }
             />
           </List.Item>
