@@ -58,9 +58,20 @@ const Wrapper = () => {
         transformRequest={(props) => {
           setIsLoading(true);
           const newBody = JSON.parse(props.body);
+          const termQuery = newBody.query.filter(
+            (i) => i.type === "term" && i.id === "term"
+          );
+
           const newQuery = [
             ...(mlMode === "search" ? newBody.query : []),
-            { id: "search", value: inputVal, execute: true },
+            {
+              id: "search",
+              value: inputVal,
+              execute: true,
+              ...(termQuery && termQuery[0] && termQuery[0].value
+                ? { react: { and: ["term"] } }
+                : {}),
+            },
           ];
           newBody.query = newQuery;
           props.body = JSON.stringify(newBody);
@@ -107,6 +118,7 @@ const Wrapper = () => {
             defaultQuery={() => ({
               aggs: {},
             })}
+            react={{ and: ["term"] }}
           />
           <Tabs
             defaultActiveKey="search"

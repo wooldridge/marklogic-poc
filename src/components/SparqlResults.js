@@ -2,7 +2,6 @@ import { List } from "antd";
 import React from "react";
 
 const SparqlResults = ({ searchHits, isLoading }) => {
-  console.log(searchHits);
   return (
     <div style={{ width: "80%" }}>
       <List
