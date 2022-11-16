@@ -15,6 +15,7 @@ const Wrapper = () => {
   const [inputVal, setInputVal] = useState("");
   const [searchHits, setSearchHits] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hitsCount, setHitsCount] = useState(0);
 
   useEffect(() => {
     handleTabChange(mlMode);
@@ -83,6 +84,8 @@ const Wrapper = () => {
         transformResponse={async (elasticsearchResponse, componentId) => {
           if (componentId === "search") {
             const hits = elasticsearchResponse?.hits?.hits || [];
+            const totHitsCount = elasticsearchResponse?.hits?.total?.value || 0;
+            setHitsCount(totHitsCount);
             const newHits = hits.map((hit) => {
               if (mlMode === "search") {
                 const content = get(hit, "_source.extracted.content", [{}]);
@@ -136,6 +139,7 @@ const Wrapper = () => {
                     <Facet />
                   </div>
                   <SearchResults
+                    hitsCount={hitsCount}
                     searchHits={searchHits}
                     isLoading={isLoading}
                   />
@@ -148,7 +152,11 @@ const Wrapper = () => {
                   <Search inputVal={inputVal} setInputVal={setInputVal} />
                 </div>
 
-                <SparqlResults searchHits={searchHits} isLoading={isLoading} />
+                <SparqlResults
+                  searchHits={searchHits}
+                  isLoading={isLoading}
+                  hitsCount={hitsCount}
+                />
               </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Optic" key="optic">
@@ -157,7 +165,11 @@ const Wrapper = () => {
                   <Search inputVal={inputVal} setInputVal={setInputVal} />
                 </div>
 
-                <TableLayout searchHits={searchHits} isLoading={isLoading} />
+                <TableLayout
+                  searchHits={searchHits}
+                  isLoading={isLoading}
+                  hitsCount={hitsCount}
+                />
               </div>
             </Tabs.TabPane>
           </Tabs>

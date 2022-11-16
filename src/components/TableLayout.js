@@ -2,7 +2,7 @@ import { ReactiveList } from "@appbaseio/reactivesearch";
 import { Table } from "antd";
 import React from "react";
 
-const TableLayout = ({ searchHits, isLoading }) => {
+const TableLayout = ({ searchHits, isLoading, hitsCount }) => {
   const columns = [
     {
       title: "Member",
@@ -38,6 +38,9 @@ const TableLayout = ({ searchHits, isLoading }) => {
 
   return (
     <div>
+      {hitsCount ? (
+        <div style={{ marginBottom: "10px" }}>{hitsCount} results found!</div>
+      ) : null}
       <Table
         columns={columns}
         dataSource={searchHits}

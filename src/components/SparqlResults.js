@@ -1,9 +1,12 @@
 import { List } from "antd";
 import React from "react";
 
-const SparqlResults = ({ searchHits, isLoading }) => {
+const SparqlResults = ({ searchHits, isLoading, hitsCount }) => {
   return (
     <div style={{ width: "80%" }}>
+      {hitsCount ? (
+        <div style={{ marginBottom: "10px" }}>{hitsCount} results found!</div>
+      ) : null}
       <List
         bordered
         dataSource={searchHits}
