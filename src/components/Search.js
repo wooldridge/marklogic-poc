@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { SearchBox } from "@appbaseio/reactivesearch";
-import { Button, Input, Select } from "antd";
+import { Button, Input } from "antd";
 import "antd/dist/antd.css";
 
 const Search = ({ inputVal, setInputVal }) => {

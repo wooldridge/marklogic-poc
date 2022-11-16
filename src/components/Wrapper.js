@@ -1,8 +1,4 @@
-import {
-  ReactiveBase,
-  ReactiveComponent,
-  SelectedFilters,
-} from "@appbaseio/reactivesearch";
+import { ReactiveBase, ReactiveComponent } from "@appbaseio/reactivesearch";
 import { Tabs } from "antd";
 import get from "lodash.get";
 import React, { useEffect, useState } from "react";
