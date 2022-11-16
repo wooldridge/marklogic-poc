@@ -121,7 +121,7 @@ const Wrapper = () => {
             activeKey={mlMode}
             onChange={handleTabChange}
           >
-            <Tabs.TabPane tab="/vi1/Search" key="search">
+            <Tabs.TabPane tab="/v1/Search" key="search">
               <div style={{ padding: 20 }}>
                 <div style={{ display: "flex", gap: 20, marginBottom: 30 }}>
                   <CollectionDropdown
