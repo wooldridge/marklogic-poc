@@ -75,7 +75,7 @@ const Wrapper = () => {
           if (mlMode === "search") props.url = getURL();
           else {
             let str =
-              "https://sls-marklogic-mhtrceb-arc.searchbase.io/_marklogic/_reactivesearch";
+              "https://sls-eaas-deploy-nurzhnu-arc.searchbase.io/_marklogic/_reactivesearch";
             props.url = `${str}?ml__mode=${mlMode}`;
           }
 
