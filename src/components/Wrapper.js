@@ -30,9 +30,12 @@ const Wrapper = () => {
     setMlCollection(key);
   };
 
+  const ML_URL = "https://test-sls-instance-wjictry-arc.searchbase.io";
+  const ML_CREDS = "e901c566e571:f5a72c51-193b-4cc5-bad1-0a308339cf2f";
+
   const getURL = () => {
     let str =
-      "https://sls-eaas-deploy-nurzhnu-arc.searchbase.io/_marklogic/_reactivesearch";
+      `${ML_URL}/_marklogic/_reactivesearch`;
     let query = "";
     if (mlCollection && mlMode) {
       query += `ml__collection=${mlCollection}&ml__mode=${mlMode}`;
@@ -49,8 +52,8 @@ const Wrapper = () => {
     <div key={`${mlMode}-${mlCollection}-${inputVal}`}>
       <ReactiveBase
         app="_marklogic"
-        url="https://sls-eaas-deploy-nurzhnu-arc.searchbase.io"
-        credentials="jR1gdqvdF:ab4f285d-0dd9-4756-903a-77d1b94c3d78"
+        url={ML_URL}
+        credentials={ML_CREDS}
         enableAppbase
         transformRequest={(props) => {
           setIsLoading(true);
@@ -75,7 +78,7 @@ const Wrapper = () => {
           if (mlMode === "search") props.url = getURL();
           else {
             let str =
-              "https://sls-eaas-deploy-nurzhnu-arc.searchbase.io/_marklogic/_reactivesearch";
+              `${ML_URL}/_marklogic/_reactivesearch`;
             props.url = `${str}?ml__mode=${mlMode}`;
           }
 

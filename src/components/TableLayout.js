@@ -1,4 +1,3 @@
-import { ReactiveList } from "@appbaseio/reactivesearch";
 import { Table } from "antd";
 import React from "react";
 
