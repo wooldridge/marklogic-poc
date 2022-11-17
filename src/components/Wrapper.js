@@ -32,7 +32,7 @@ const Wrapper = () => {
 
   const getURL = () => {
     let str =
-      "https://sls-marklogic-mhtrceb-arc.searchbase.io/_marklogic/_reactivesearch";
+      "https://sls-eaas-deploy-nurzhnu-arc.searchbase.io/_marklogic/_reactivesearch";
     let query = "";
     if (mlCollection && mlMode) {
       query += `ml__collection=${mlCollection}&ml__mode=${mlMode}`;
@@ -49,8 +49,8 @@ const Wrapper = () => {
     <div key={`${mlMode}-${mlCollection}-${inputVal}`}>
       <ReactiveBase
         app="_marklogic"
-        url="https://sls-marklogic-mhtrceb-arc.searchbase.io"
-        credentials="2vhVRi0Oxf:ADyzknt5fY5FLmWcVK"
+        url="https://sls-eaas-deploy-nurzhnu-arc.searchbase.io"
+        credentials="jR1gdqvdF:ab4f285d-0dd9-4756-903a-77d1b94c3d78"
         enableAppbase
         transformRequest={(props) => {
           setIsLoading(true);
