@@ -7,7 +7,11 @@ const Search = ({ inputVal, setInputVal }) => {
 
   return (
     <div style={{ display: "flex", width: "80%", gap: 20 }}>
-      <Input value={val} onChange={(e) => setVal(e.target.value)} />
+      <Input
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        onPressEnter={(e) => setInputVal(e.target.value)}
+      />
       <Button onClick={() => setInputVal(val)} type="primary" size="large">
         Search
       </Button>
