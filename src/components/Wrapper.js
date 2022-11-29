@@ -11,6 +11,7 @@ import SparqlResults from "./SparqlResults";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import { SearchBox, ResultsList } from 'maftest-button';
+import searchConfig from '../config/search.config.js';
 
 const Wrapper = () => {
   const [mlMode, setMlMode] = useState("search");
@@ -27,6 +28,7 @@ const Wrapper = () => {
 
   const handleTabChange = (key) => {
     setInputVal("");
+    setMlCollection("Member");
     setSearchResponse({});
     setMlMode(key);
   };
@@ -194,13 +196,20 @@ const Wrapper = () => {
                         default: true
                     },
                     {
-                        label: "Location",
+                        label: "Service",
                         value: "ServiceLocation"
                     },
-                ]}} button="horizontal" handleSearch={setInputVal} width="600px" />
-                <div>{hitsCount}</div>
-                {/* TODO Format and display results */}
-                <div>{JSON.stringify(searchResponse)}</div>
+                ]}} button="horizontal" handleSearch={setInputVal} handleSelect={setMlCollection} width="600px" />
+                { hitsCount > 0 && 
+                    <div style={{display: "flex", padding: "10px 0"}}>
+                        {hitsCount} {hitsCount === 1 ? "result" : "results"}
+                    </div>
+                }
+                <ResultsList 
+                    data={searchResponse} 
+                    config={searchConfig.search.results.config} 
+                />
+                {/* <div>{JSON.stringify(searchResponse)}</div> */}
               </div>
             </Tabs.TabPane>
           </Tabs>

@@ -10,7 +10,7 @@
     "antd": "^4.24.1",
     "bootstrap": "^5.2.0",
     "lodash.get": "^4.4.2",
-    "maftest-button": "^1.0.6",
+    "maftest-button": "file:../maftest-button/maftest-button-1.0.26.tgz",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
