@@ -9,6 +9,9 @@ import Search from "./Search";
 import TableLayout from "./TableLayout";
 import SparqlResults from "./SparqlResults";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+import { SearchBox, ResultsList } from 'maftest-button';
+
 const Wrapper = () => {
   const [mlMode, setMlMode] = useState("search");
   const [mlCollection, setMlCollection] = useState("Member");
@@ -16,6 +19,7 @@ const Wrapper = () => {
   const [searchHits, setSearchHits] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hitsCount, setHitsCount] = useState(0);
+  const [searchResponse, setSearchResponse] = useState({});
 
   useEffect(() => {
     handleTabChange(mlMode);
@@ -23,6 +27,7 @@ const Wrapper = () => {
 
   const handleTabChange = (key) => {
     setInputVal("");
+    setSearchResponse({});
     setMlMode(key);
   };
 
@@ -37,10 +42,12 @@ const Wrapper = () => {
     let str =
       `${ML_URL}/_marklogic/_reactivesearch`;
     let query = "";
+    // Handle 'ev' tab search as 'search' tab searches
+    const mlModeNew = (mlMode === 'search' || mlMode === 'ev') ? 'search' : mlMode; 
     if (mlCollection && mlMode) {
-      query += `ml__collection=${mlCollection}&ml__mode=${mlMode}`;
+      query += `ml__collection=${mlCollection}&ml__mode=${mlModeNew}`;
     } else if (mlMode || mlCollection) {
-      if (mlMode) query += `ml__mode=${mlMode}`;
+      if (mlMode) query += `ml__mode=${mlModeNew}`;
       if (mlCollection) query += `ml__collection=${mlCollection}`;
     }
     if (query) return `${str}?${query}`;
@@ -63,7 +70,7 @@ const Wrapper = () => {
           );
 
           const newQuery = [
-            ...(mlMode === "search" ? newBody.query : []),
+            ...( (mlMode === "search" || mlMode === "ev") ? newBody.query : []),
             {
               id: "search",
               value: inputVal,
@@ -75,7 +82,7 @@ const Wrapper = () => {
           ];
           newBody.query = newQuery;
           props.body = JSON.stringify(newBody);
-          if (mlMode === "search") props.url = getURL();
+          if (mlMode === "search" || mlMode === "ev") props.url = getURL();
           else {
             let str =
               `${ML_URL}/_marklogic/_reactivesearch`;
@@ -86,6 +93,8 @@ const Wrapper = () => {
         }}
         transformResponse={async (elasticsearchResponse, componentId) => {
           if (componentId === "search") {
+            // TODO 'ev' searches to pull content from elasticsearchResponse payload
+            setSearchResponse(elasticsearchResponse);
             const hits = elasticsearchResponse?.hits?.hits || [];
             const totHitsCount = elasticsearchResponse?.hits?.total?.value || 0;
             setHitsCount(totHitsCount);
@@ -173,6 +182,25 @@ const Wrapper = () => {
                   isLoading={isLoading}
                   hitsCount={hitsCount}
                 />
+              </div>
+            </Tabs.TabPane>
+            {/* Entity Viewer components example */}
+            <Tabs.TabPane tab="Entity Viewer" key="ev">
+              <div style={{ padding: 20 }}>
+                <SearchBox config={{ items: [
+                    {
+                        label: "Member",
+                        value: "Member",
+                        default: true
+                    },
+                    {
+                        label: "Location",
+                        value: "ServiceLocation"
+                    },
+                ]}} button="horizontal" handleSearch={setInputVal} width="600px" />
+                <div>{hitsCount}</div>
+                {/* TODO Format and display results */}
+                <div>{JSON.stringify(searchResponse)}</div>
               </div>
             </Tabs.TabPane>
           </Tabs>
