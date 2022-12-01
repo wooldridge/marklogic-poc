@@ -10,10 +10,11 @@
     "antd": "^4.24.1",
     "bootstrap": "^5.2.0",
     "lodash.get": "^4.4.2",
-    "maftest-button": "file:../maftest-button/maftest-button-1.0.26.tgz",
+    "maftest-button": "file:../maftest-button/maftest-button-1.0.37.tgz",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "regraph": "file:regraph-3.10.0+evaluation-2022-12-29.tgz",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -12,6 +12,7 @@ import SparqlResults from "./SparqlResults";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { SearchBox, ResultsList } from 'maftest-button';
 import searchConfig from '../config/search.config.js';
+import { Chart } from 'regraph';
 
 const Wrapper = () => {
   const [mlMode, setMlMode] = useState("search");
@@ -21,12 +22,78 @@ const Wrapper = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hitsCount, setHitsCount] = useState(0);
   const [searchResponse, setSearchResponse] = useState({});
+  const [items, setItems] = useState({});
 
   useEffect(() => {
     handleTabChange(mlMode);
   }, []);
 
+const labelStyle = {
+    backgroundColor: 'rgba(0,0,0,0)',
+    color: 'rgb(202, 209, 216)',
+    center: false,
+};
+
+const linkStyle = {
+    color: 'rgb(221, 60, 60)',
+    width: 4,
+};
+
+// Build ReGraph network graph
+useEffect(() => {
+    if (mlMode === 'regraph') {
+        const newItems = {};
+        // For each disease result, create graph of parent and children relations
+        searchHits.forEach((h, i) => {
+            newItems['disease'+i] = {
+                color: 'rgb(241, 93, 91)',
+                label: {text: h.Disease.substring(0, 16)+'...'},
+                size: 2.5,
+            }
+            if (h.Parent) {
+                newItems['parent'+i] = {
+                    color: 'rgb(4, 129, 112)',
+                    label: {text: h.Parent.substring(0, 16)+'...'},
+                    size: 1.5,
+                };
+                newItems['linkParent'+i] = {
+                    ...linkStyle,
+                    id1: 'disease'+i,
+                    id2: 'parent'+i,
+                    label: {text: 'hasParent'},
+                }
+            }
+            if (h.Children) {
+                newItems['child'+i] = {
+                    color: 'rgb(4, 129, 112)',
+                    label: {text: h.Children.substring(0, 16)+'...'},
+                    size: 1.7,
+                };
+                newItems['linkChild'+i] = {
+                    ...linkStyle,
+                    id1: 'disease'+i,
+                    id2: 'child'+i,
+                    label: {text: 'hasChild'},
+                }
+            }
+        })
+        setItems(newItems);
+    }
+}, [searchHits]);
+
+  const settings = {
+    options: {
+      navigation: false,
+      overview: false,
+      backgroundColor: 'rgb(61, 72, 82)',
+    },
+    onWheel: ({ preventDefault }) => {
+      preventDefault();
+    },
+  };
+
   const handleTabChange = (key) => {
+    console.log("handleTabChange key", key);
     setInputVal("");
     setMlCollection("Member");
     setSearchResponse({});
@@ -34,6 +101,7 @@ const Wrapper = () => {
   };
 
   const handleMlCollection = (key) => {
+    console.log("handleMlCollection key", key);
     setMlCollection(key);
   };
 
@@ -88,7 +156,9 @@ const Wrapper = () => {
           else {
             let str =
               `${ML_URL}/_marklogic/_reactivesearch`;
-            props.url = `${str}?ml__mode=${mlMode}`;
+            // Handle 'regraph' tab search as 'sparql' tab searches
+            const mlModeNew = (mlMode === 'sparql' || mlMode === 'regraph') ? 'sparql' : mlMode; 
+            props.url = `${str}?ml__mode=${mlModeNew}`;
           }
 
           return props;
@@ -193,7 +263,7 @@ const Wrapper = () => {
                     {
                         label: "Member",
                         value: "Member",
-                        default: true
+                        //default: true
                     },
                     {
                         label: "Service",
@@ -210,6 +280,19 @@ const Wrapper = () => {
                     config={searchConfig.search.results.config} 
                 />
                 {/* <div>{JSON.stringify(searchResponse)}</div> */}
+              </div>
+            </Tabs.TabPane>
+            {/* ReGraph components example */}
+            <Tabs.TabPane tab="ReGraph" key="regraph">
+              <div style={{ padding: 20 }}>
+                <div style={{ padding: 20 }}>
+                    <div style={{ marginBottom: 30 }}>
+                    <Search inputVal={inputVal} setInputVal={setInputVal} />
+                    </div>
+                    <Chart
+                        style={{ flex: 1, width: '100%', height: '400px' }}
+                        items={items}/>
+                </div>
               </div>
             </Tabs.TabPane>
           </Tabs>
